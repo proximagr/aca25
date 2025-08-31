@@ -11,22 +11,32 @@ openai.api_key = os.getenv("AZURE_OPENAI_KEY")
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("Agent triggered by telemetry")
 
-    telemetry = req.get_json()
-    prompt = f"""
-    You are an infrastructure AI agent. Analyze the following telemetry and logs:
-    CPU: {telemetry['cpu']}%
-    Memory: {telemetry['memory']}%
-    Logs: {telemetry['logs']}
+    try:
+        telemetry = req.get_json()
+        cpu = telemetry.get("cpu", "unknown")
+        memory = telemetry.get("memory", "unknown")
+        logs = telemetry.get("logs", [])
 
-    Identify the root cause and propose remediation steps.
-    """
+        prompt = f"""
+        You are an infrastructure AI agent. Analyze the following telemetry and logs:
+        CPU: {cpu}%
+        Memory: {memory}%
+        Logs: {logs}
 
-    response = openai.ChatCompletion.create(
-        engine="gpt-4.1",  # Replace with your deployment name
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.3,
-        max_tokens=300
-    )
+        Identify the root cause and propose remediation steps.
+        """
 
-    result = response['choices'][0]['message']['content']
-    return func.HttpResponse(result, status_code=200)
+        response = openai.ChatCompletion.create(
+            engine="gpt-4.1",  # Replace with actual deployment name
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3,
+            max_tokens=300
+        )
+
+        result = response['choices'][0]['message']['content']
+        return func.HttpResponse(result, status_code=200)
+
+    except Exception as e:
+        logging.error(f"Agent failed: {e}")
+        return func.HttpResponse("Internal Server Error", status_code=500)
+
