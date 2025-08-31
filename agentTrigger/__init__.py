@@ -22,7 +22,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     """
 
     response = openai.ChatCompletion.create(
-        engine="gpt-4o",  # Replace with your deployment name
+        engine="gpt-4.1",  # Replace with your deployment name
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3,
         max_tokens=300
