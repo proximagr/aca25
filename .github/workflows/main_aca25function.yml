@@ -77,9 +77,4 @@ jobs:
         with:
           app-name: 'aca25function'
           slot-name: 'Production'
-          package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-
-          
-
-
-
+          package: '.'
