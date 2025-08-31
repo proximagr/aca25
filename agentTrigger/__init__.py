@@ -7,8 +7,7 @@ from openai import AzureOpenAI
 client = AzureOpenAI(
     api_key=os.getenv("AZURE_OPENAI_KEY"),
     api_version="2024-12-01-preview",
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    azure_deployment=os.getenv("AZURE_OPENAI_DEPLOYMENT")  # Optional if you want to keep it dynamic
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
 )
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
@@ -30,7 +29,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         """
 
         chat_completion = client.chat.completions.create(
-            model="gpt-4.1",  # This must match your deployment name
+            model=os.getenv("AZURE_OPENAI_DEPLOYMENT"),
             messages=[{"role": "user", "content": prompt}]
         )
 
@@ -38,5 +37,5 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         return func.HttpResponse(result, status_code=200)
 
     except Exception as e:
-        logging.error(f"Agent failed: {e}")
+        logging.error(f"Agent failed: {str(e)}")
         return func.HttpResponse("Internal Server Error", status_code=500)
