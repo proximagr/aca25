@@ -34,6 +34,12 @@ jobs:
           python -m venv venv
           source venv/bin/activate
 
+      - name: Install dependencies
+        run: |
+          source venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
       # Optional: Add step to run tests here
 
       - name: Zip artifact for deployment
@@ -81,3 +87,4 @@ jobs:
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
 
           
+
