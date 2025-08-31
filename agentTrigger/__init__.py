@@ -5,7 +5,7 @@ import azure.functions as func
 
 openai.api_type = "azure"
 openai.api_base = os.getenv("AZURE_OPENAI_ENDPOINT")
-openai.api_version = "2023-07-01-preview"
+openai.api_version = "2024-12-01-preview"
 openai.api_key = os.getenv("AZURE_OPENAI_KEY")
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
