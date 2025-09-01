@@ -1,12 +1,13 @@
 import openai
 import os
-import logging
 import azure.functions as func
+import logging
 
-openai.api_type = "azure"
-openai.api_base = os.getenv("AZURE_OPENAI_ENDPOINT")
-openai.api_version = "2024-12-01-preview"
+# Configure OpenAI for Azure
 openai.api_key = os.getenv("AZURE_OPENAI_KEY")
+openai.api_base = os.getenv("AZURE_OPENAI_ENDPOINT")
+openai.api_type = "azure"
+openai.api_version = "2024-12-01-preview"
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info("Agent triggered by telemetry")
@@ -27,13 +28,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         """
 
         response = openai.ChatCompletion.create(
-            engine="gpt-4.1",  # Must match your deployment name exactly
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.3,
-            max_tokens=300
+            engine="gpt-4.1",  # Your Azure deployment name
+            messages=[{"role": "user", "content": prompt}]
         )
 
-        result = response['choices'][0]['message']['content']
+        result = response.choices[0].message["content"]
         return func.HttpResponse(result, status_code=200)
 
     except Exception as e:
